@@ -1,16 +1,27 @@
 <template>
-  <div class="search-box animate-scale-in" style="animation-delay: 0.5s">
-    <div class="search-input">
-      <i class="fas fa-search"></i>
-      <input
-        type="text"
-        :value="searchQuery"
-        @input="$emit('update:searchQuery', $event.target.value)"
-        @focus="$emit('focus')"
-        @blur="$emit('blur')"
-        placeholder="Cari Lokasi Alamat Anda"
-        aria-label="Cari alamat atau lokasi"
-      />
+  <div class="search-box animate-scale-in">
+    <div class="search-input-wrapper">
+      <div class="input-group">
+        <i class="fas fa-search search-icon"></i>
+        <input
+          type="text"
+          :value="searchQuery"
+          @input="$emit('update:searchQuery', $event.target.value)"
+          @focus="$emit('focus')"
+          @blur="$emit('blur')"
+          placeholder="Cari Lokasi Alamat Anda..."
+          aria-label="Cari alamat atau lokasi"
+        />
+        <button
+          v-if="searchQuery"
+          class="btn-clear"
+          @click="$emit('update:searchQuery', '')"
+          aria-label="Bersihkan pencarian"
+        >
+          <i class="fas fa-times-circle"></i>
+        </button>
+      </div>
+
       <div class="search-actions">
         <button
           v-if="hasLocation"
@@ -28,29 +39,37 @@
           :disabled="isDetecting"
           aria-label="Deteksi risiko banjir di lokasi ini"
         >
-          <i v-if="!isDetecting" class="fas fa-radar"></i>
-          <i v-else class="fas fa-spinner fa-spin"></i>
-          <span>{{ isDetecting ? 'Menganalisis...' : 'Deteksi Risiko' }}</span>
+          <div class="btn-content">
+            <i v-if="!isDetecting" class="fas fa-radar"></i>
+            <i v-else class="fas fa-spinner fa-spin"></i>
+            <span class="btn-text">{{ isDetecting ? 'Menganalisis...' : 'Deteksi Risiko' }}</span>
+          </div>
         </button>
       </div>
     </div>
 
-    <!-- Suggestions -->
-    <transition name="fade">
-      <div v-if="showSuggestions && filteredSuggestions.length > 0" class="suggestions">
-        <div
-          v-for="suggestion in filteredSuggestions"
-          :key="suggestion.name"
-          class="suggestion-item"
-          @mousedown="$emit('select-suggestion', suggestion)"
-        >
-          <div class="suggestion-icon">
-            <i class="fas fa-map-marker-alt"></i>
-          </div>
-          <div class="suggestion-text">
-            <span class="suggestion-name">{{ suggestion.displayName }}</span>
-            <span class="suggestion-meta">{{ suggestion.kec }}, {{ suggestion.kab }}</span>
-          </div>
+    <!-- Suggestions List -->
+    <transition name="slide-down">
+      <div v-if="showSuggestions && filteredSuggestions.length > 0" class="suggestions-container">
+        <div class="suggestions-header">
+          <span>Saran Lokasi</span>
+        </div>
+        <div class="suggestions-list">
+          <button
+            v-for="suggestion in filteredSuggestions"
+            :key="suggestion.name"
+            class="suggestion-item"
+            @mousedown="$emit('select-suggestion', suggestion)"
+          >
+            <div class="suggestion-icon">
+              <i class="fas fa-map-pin"></i>
+            </div>
+            <div class="suggestion-info">
+              <span class="suggestion-name">{{ suggestion.displayName }}</span>
+              <span class="suggestion-meta">{{ suggestion.kec }}, {{ suggestion.kab }}</span>
+            </div>
+            <i class="fas fa-chevron-right arrow-icon"></i>
+          </button>
         </div>
       </div>
     </transition>
@@ -79,13 +98,13 @@ defineEmits([
 
 <style scoped>
 .search-box {
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
   border: 1px solid var(--glass-border);
   border-radius: var(--radius-xl);
-  padding: 1.25rem;
-  box-shadow: var(--shadow-lg);
+  padding: 0.75rem;
+  box-shadow: var(--glass-shadow);
   margin-bottom: 2.5rem;
   position: relative;
   z-index: 100;
@@ -98,122 +117,181 @@ defineEmits([
   box-shadow: var(--shadow-xl);
 }
 
-.search-input {
+.search-input-wrapper {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  position: relative;
+  gap: 0.75rem;
 }
 
-.search-input > i {
-  position: absolute;
-  left: 1.5rem;
-  color: var(--primary);
-  font-size: 1.25rem;
-}
-
-.search-input input {
+.input-group {
   flex: 1;
-  border: 1px solid var(--gray-100);
-  padding: 1.25rem 1.25rem 1.25rem 3.5rem;
-  border-radius: var(--radius-lg);
-  font-size: 1.125rem;
-  font-weight: 500;
-  transition: var(--transition);
-  background: var(--gray-50);
+  position: relative;
+  display: flex;
+  align-items: center;
 }
 
-.search-input input:focus {
+.search-icon {
+  position: absolute;
+  left: 1.25rem;
+  color: var(--primary);
+  font-size: 1.125rem;
+  pointer-events: none;
+}
+
+.btn-clear {
+  position: absolute;
+  right: 1.25rem;
+  background: none;
+  border: none;
+  color: var(--gray-400);
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  transition: var(--transition-fast);
+}
+
+.btn-clear:hover {
+  color: var(--danger);
+  transform: scale(1.1);
+}
+
+.input-group input {
+  width: 100%;
+  border: 1px solid var(--gray-100);
+  padding: 1.125rem 1.125rem 1.125rem 3.5rem;
+  border-radius: var(--radius-lg);
+  font-size: 1rem;
+  font-weight: 600;
+  transition: var(--transition-fast);
+  background: var(--gray-50);
+  color: var(--gray-900);
+}
+
+.input-group input:focus {
   outline: none;
   background: white;
   border-color: var(--primary);
-  box-shadow: 0 0 0 4px var(--primary-light);
+  box-shadow: 0 0 0 4px var(--primary-soft);
 }
 
 .search-actions {
   display: flex;
-  gap: 0.75rem;
+  gap: 0.5rem;
   align-items: center;
 }
 
 .btn-detect {
-  min-width: 180px;
-  justify-content: center;
-  height: 56px;
-  font-size: 1rem;
-  font-weight: 700;
-  white-space: nowrap;
+  min-width: 160px;
+  height: clamp(52px, 8vh, 60px);
+}
+
+.btn-content {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
 }
 
 .btn-bookmark {
-  width: 56px;
-  height: 56px;
+  width: clamp(52px, 8vh, 60px);
+  height: clamp(52px, 8vh, 60px);
   border-radius: var(--radius-lg);
   background: var(--gray-50);
-  border: 1px solid var(--gray-200);
+  border: 1px solid var(--gray-100);
   color: var(--gray-400);
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: var(--transition);
+  transition: var(--transition-fast);
+  cursor: pointer;
 }
 
 .btn-bookmark:hover {
   background: white;
   border-color: var(--primary);
   color: var(--primary);
+  transform: translateY(-2px);
 }
 
 .btn-bookmark.saved {
-  background: var(--primary-light);
+  background: var(--primary-soft);
   border-color: var(--primary);
   color: var(--primary);
 }
 
-.suggestions {
+/* Suggestions Container */
+.suggestions-container {
   position: absolute;
-  top: calc(100% + 1rem);
+  top: calc(100% + 0.75rem);
   left: 0;
   right: 0;
   background: white;
   border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-xl);
+  box-shadow: 0 20px 40px -12px rgba(16, 24, 40, 0.2);
   border: 1px solid var(--gray-100);
   overflow: hidden;
   z-index: 1000;
+  animation: slideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.suggestions-header {
+  padding: 1rem 1.5rem;
+  background: var(--gray-25);
+  border-bottom: 1px solid var(--gray-100);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--gray-500);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.suggestions-list {
+  max-height: 320px;
+  overflow-y: auto;
 }
 
 .suggestion-item {
+  width: 100%;
   padding: 1.25rem 1.5rem;
   display: flex;
   align-items: center;
   gap: 1.25rem;
   cursor: pointer;
-  transition: var(--transition);
+  transition: var(--transition-fast);
+  border: none;
+  background: transparent;
+  text-align: left;
+  border-bottom: 1px solid var(--gray-50);
+}
+
+.suggestion-item:last-child {
+  border-bottom: none;
 }
 
 .suggestion-item:hover {
-  background: var(--primary-light);
+  background: var(--primary-soft);
 }
 
 .suggestion-icon {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
   background: var(--gray-50);
   display: flex;
   align-items: center;
   justify-content: center;
   color: var(--primary);
-  transition: var(--transition);
+  font-size: 1.125rem;
+  transition: var(--transition-fast);
 }
 
 .suggestion-item:hover .suggestion-icon {
   background: white;
-  transform: scale(1.1);
+  transform: scale(1.1) rotate(-10deg);
 }
 
-.suggestion-text {
+.suggestion-info {
+  flex: 1;
   display: flex;
   flex-direction: column;
 }
@@ -221,73 +299,83 @@ defineEmits([
 .suggestion-name {
   font-weight: 700;
   color: var(--gray-900);
+  font-size: 1rem;
 }
 
 .suggestion-meta {
-  font-size: 0.8125rem;
+  font-size: 0.875rem;
   color: var(--gray-500);
 }
 
-.animate-scale-in {
+.arrow-icon {
+  color: var(--gray-300);
+  font-size: 0.875rem;
   opacity: 0;
-  transform: scale(0.95);
-  animation: scaleIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  transform: translateX(-10px);
+  transition: var(--transition-fast);
 }
 
-@keyframes scaleIn {
+.suggestion-item:hover .arrow-icon {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Animations */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
   to {
     opacity: 1;
-    transform: scale(1);
+    transform: translateY(0);
   }
 }
 
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.3s ease;
+.slide-down-enter-active,
+.slide-down-leave-active {
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.fade-enter-from,
-.fade-leave-to {
+.slide-down-enter-from,
+.slide-down-leave-to {
   opacity: 0;
+  transform: translateY(-20px);
 }
 
-@media (max-width: 640px) {
+@media (max-width: 768px) {
   .search-box {
-    padding: 1rem;
+    padding: 0.5rem;
     border-radius: var(--radius-lg);
   }
 
-  .search-input {
+  .search-input-wrapper {
     flex-direction: column;
     align-items: stretch;
-    gap: 0.75rem;
+    gap: 0.5rem;
   }
 
-  .search-input > i {
-    top: 1.1rem;
-  }
-
-  .search-input input {
-    padding-left: 3rem;
-    width: 100%;
+  .input-group input {
+    padding-left: 3.25rem;
+    height: 56px;
   }
 
   .search-actions {
     width: 100%;
-    margin-top: 0.25rem;
-    display: flex;
     gap: 0.5rem;
   }
 
   .btn-bookmark {
-    width: 56px;
-    flex-shrink: 0;
+    flex: 1;
+    max-width: 60px;
   }
 
   .btn-detect {
-    flex: 1;
-    min-width: auto;
-    width: auto;
+    flex: 4;
+  }
+
+  .btn-text {
+    font-size: 0.875rem;
   }
 }
 </style>

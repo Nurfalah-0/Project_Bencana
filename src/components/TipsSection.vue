@@ -1,8 +1,13 @@
 <template>
   <div class="tips-section">
     <div class="tips-header">
-      <div class="tips-icon-circle"><i class="fas fa-lightbulb"></i></div>
-      <h3>Tips Edukasi & Mitigasi</h3>
+      <div class="header-icon-box">
+        <i class="fas fa-lightbulb-on"></i>
+      </div>
+      <div class="header-content">
+        <h3 class="tips-title">Panduan & Edukasi</h3>
+        <p class="tips-subtitle">Tindakan preventif untuk meminimalisir dampak bencana</p>
+      </div>
     </div>
 
     <div class="tips-grid">
@@ -10,21 +15,21 @@
         v-for="(tip, index) in tips"
         :key="tip.id"
         class="tip-card"
-        :style="{ 'animation-delay': index * 0.1 + 's' }"
+        :style="{ '--anim-delay': index * 0.1 + 's' }"
       >
-        <div class="tip-card-top">
-          <div class="tip-icon-box">
+        <div class="tip-top">
+          <div class="tip-icon-circle">
             <i :class="tip.icon"></i>
           </div>
-          <h4>{{ tip.title }}</h4>
+          <h4 class="tip-card-title">{{ tip.title }}</h4>
         </div>
-        <div class="tip-card-body">
-          <p>{{ tip.description }}</p>
-          <div class="tip-items-wrapper">
-            <div v-for="(item, i) in tip.items" :key="i" class="tip-item-bullet">
-              <i class="fas fa-check-circle"></i>
-              <span>{{ item }}</span>
-            </div>
+
+        <p class="tip-card-desc">{{ tip.description }}</p>
+
+        <div class="tip-check-list">
+          <div v-for="(item, i) in tip.items" :key="i" class="check-item">
+            <div class="check-dot"></div>
+            <span>{{ item }}</span>
           </div>
         </div>
       </div>
@@ -38,80 +43,86 @@ import { ref } from 'vue'
 const tips = ref([
   {
     id: 1,
-    icon: 'fas fa-map-marked-alt',
-    title: 'Kenali Peta Lokasi',
-    description: 'Pahami topografi dan titik aman di sekitar Anda.',
-    items: ['Catat titik evakuasi', 'Hafalkan rute alternatif', 'Kenali zona genangan']
+    icon: 'fas fa-map-location-dot',
+    title: 'Analisis Medan',
+    description: 'Pahami kondisi geografis dan titik evakuasi di sekitar Anda.',
+    items: ['Hafalkan rute alternatif', 'Kenali zona rawan genangan']
   },
   {
     id: 2,
-    icon: 'fas fa-bell',
-    title: 'Peringatan Dini',
-    description: 'Pastikan Anda selalu terhubung dengan info cuaca.',
-    items: ['Aktifkan notifikasi AI', 'Follow info BPDB/BMKG', 'Cek Tinggi Muka Air']
+    icon: 'fas fa-tower-broadcast',
+    title: 'Informasi Real-time',
+    description: 'Selalu terhubung dengan pusat data peringatan dini.',
+    items: ['Aktifkan notifikasi aplikasi', 'Pantau debit sungai terdekat']
   },
   {
     id: 3,
-    icon: 'fas fa-users',
-    title: 'Koordinasi Warga',
-    description: 'Keselamatan bersama dimulai dari komunikasi yang baik.',
-    items: ['Grup siaga lingkungan', 'Tunjuk koordinator RT', 'Pelajari sinyal kentongan']
+    icon: 'fas fa-people-group',
+    title: 'Sinergi Warga',
+    description: 'Keselamatan bersama dimulai dari kordinasi lingkungan.',
+    items: ['Grup siaga bencana RT/RW', 'Tunjuk koordinator lapangan']
   },
   {
     id: 4,
-    icon: 'fas fa-box-open',
-    title: 'Tas Siaga Bencana',
-    description: 'Siapkan kebutuhan dasar untuk 3 hari pertama.',
-    items: ['Dokumen & Arsip digital', 'Obat khusus & P3K', 'Senter & Powerbank']
+    icon: 'fas fa-briefcase-medical',
+    title: 'Logistik Darurat',
+    description: 'Siapkan kebutuhan dasar untuk bertahan 72 jam.',
+    items: ['P3K & Obat-obatan rutin', 'Cadangan pangan & air bersih']
   },
   {
     id: 5,
-    icon: 'fas fa-house-flood-water',
-    title: 'Preventif Rumah',
-    description: 'Langkah teknis mengurangi kerugian aset.',
-    items: ['Tinggikan stop kontak', 'Pintu barikade air', 'Elevasi barang berharga']
+    icon: 'fas fa-house-chimney-crack',
+    title: 'Proteksi Rumah',
+    description: 'Langkah teknis mengamankan properti dari genangan.',
+    items: ['Tinggikan instalasi listrik', 'Barikade pintu masuk air']
   },
   {
     id: 6,
-    icon: 'fas fa-car-side',
-    title: 'Logistik Kendaraan',
-    description: 'Pastikan mobilitas tidak terhambat saat darurat.',
-    items: ['BBM selalu terisi', 'Parkir di tempat tinggi', 'Cek kit darurat mobil']
+    icon: 'fas fa-car-rear',
+    title: 'Aset Bergerak',
+    description: 'Posisikan kendaraan di tempat yang aman dan tinggi.',
+    items: ['Parkir di area elevasi tinggi', 'Pastikan tangki BBM terisi']
   }
 ])
 </script>
 
 <style scoped>
 .tips-section {
-  margin-top: 2rem;
-  margin-bottom: 4rem;
+  margin-top: 3rem;
+  margin-bottom: 3rem;
 }
 
 .tips-header {
   display: flex;
   align-items: center;
-  gap: 1.25rem;
-  margin-bottom: 2.5rem;
+  gap: 1rem;
+  margin-bottom: 2rem;
 }
 
-.tips-icon-circle {
-  width: 48px;
-  height: 48px;
-  border-radius: 14px;
-  background: var(--primary-light);
+.header-icon-box {
+  width: 44px;
+  height: 44px;
+  background: var(--primary-soft);
   color: var(--primary);
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 1.25rem;
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
 }
 
-.tips-header h3 {
-  font-size: 1.5rem;
+.tips-title {
+  font-size: 1.125rem;
   font-weight: 800;
-  color: var(--gray-900);
   margin: 0;
+  color: var(--gray-900);
+}
+
+.tips-subtitle {
+  font-size: 0.8125rem;
+  color: var(--gray-500);
+  font-weight: 500;
+  margin-top: 0.125rem;
 }
 
 .tips-grid {
@@ -122,16 +133,83 @@ const tips = ref([
 
 .tip-card {
   background: white;
-  border-radius: var(--radius-lg);
+  border-radius: 20px;
   padding: 1.75rem;
   border: 1px solid var(--gray-100);
   transition: var(--transition);
-  animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
-  display: flex;
-  flex-direction: column;
+  animation: revealUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+  animation-delay: var(--anim-delay);
 }
 
-@keyframes fadeIn {
+.tip-card:hover {
+  transform: translateY(-6px);
+  border-color: var(--primary-soft);
+  box-shadow: var(--shadow-lg);
+}
+
+.tip-top {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.tip-icon-circle {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: var(--gray-50);
+  color: var(--gray-600);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  transition: var(--transition-fast);
+}
+
+.tip-card:hover .tip-icon-circle {
+  background: var(--primary);
+  color: white;
+}
+
+.tip-card-title {
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--gray-900);
+  margin: 0;
+}
+
+.tip-card-desc {
+  font-size: 0.8125rem;
+  color: var(--gray-500);
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+  font-weight: 500;
+}
+
+.tip-check-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.check-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--gray-700);
+}
+
+.check-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--secondary);
+}
+
+@keyframes revealUp {
   from {
     opacity: 0;
     transform: translateY(15px);
@@ -142,79 +220,13 @@ const tips = ref([
   }
 }
 
-.tip-card:hover {
-  transform: translateY(-5px);
-  border-color: var(--primary-light);
-  box-shadow: var(--shadow-lg);
-}
-
-.tip-card-top {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  margin-bottom: 1.25rem;
-}
-
-.tip-icon-box {
-  width: 44px;
-  height: 44px;
-  border-radius: 10px;
-  background: var(--gray-50);
-  color: var(--gray-600);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.125rem;
-  transition: var(--transition);
-}
-
-.tip-card:hover .tip-icon-box {
-  background: var(--primary);
-  color: white;
-  transform: scale(1.1);
-}
-
-.tip-card-top h4 {
-  font-size: 1.125rem;
-  font-weight: 700;
-  margin: 0;
-  color: var(--gray-900);
-}
-
-.tip-card-body p {
-  font-size: 0.875rem;
-  color: var(--gray-500);
-  line-height: 1.6;
-  margin-bottom: 1.5rem;
-}
-
-.tip-items-wrapper {
-  display: flex;
-  flex-direction: column;
-  gap: 0.625rem;
-}
-
-.tip-item-bullet {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  font-size: 0.8125rem;
-  font-weight: 600;
-  color: var(--gray-700);
-}
-
-.tip-item-bullet i {
-  font-size: 0.875rem;
-  color: var(--secondary);
-}
-
 @media (max-width: 1024px) {
   .tips-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 700px) {
   .tips-grid {
     grid-template-columns: 1fr;
   }

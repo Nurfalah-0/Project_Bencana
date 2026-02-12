@@ -1,5 +1,5 @@
 <template>
-  <div class="gps-section animate-fade-in" style="animation-delay: 0.6s">
+  <div class="gps-section animate-fade-in">
     <button
       class="btn-gps"
       :class="gpsButtonClass"
@@ -11,40 +11,42 @@
         <i :class="gpsButtonIcon"></i>
         <div v-if="isGettingLocation" class="gps-pulse"></div>
       </div>
-      <span>{{ gpsButtonText }}</span>
+      <span class="btn-text">{{ gpsButtonText }}</span>
     </button>
 
-    <!-- GPS Info -->
+    <!-- GPS Info & Actions -->
     <transition name="slide-up">
-      <div v-if="showGPSStatus" class="gps-info">
-        <div class="accuracy-indicator" :class="gpsAccuracyClass">
-          <i class="fas fa-bullseye"></i>
+      <div v-if="showGPSStatus" class="gps-status-card">
+        <div class="accuracy-badge" :class="gpsAccuracyClass">
+          <i class="fas fa-satellite-dish"></i>
           <span>{{ gpsStatusText }}</span>
         </div>
+
         <div class="gps-actions">
           <button
-            class="btn-refresh"
+            class="action-btn refresh"
             @click="$emit('refresh')"
             aria-label="Perbarui lokasi GPS"
             title="Refresh GPS"
           >
-            <i class="fas fa-sync-alt"></i>
+            <i class="fas fa-sync-alt" :class="{ 'fa-spin': isGettingLocation }"></i>
           </button>
           <button
-            class="btn-help"
+            class="action-btn help"
             @click="$emit('show-tips')"
             aria-label="Tips mendapatkan GPS akurat"
             title="Tips GPS"
           >
-            <i class="fas fa-question-circle"></i>
+            <i class="fas fa-lightbulb"></i>
           </button>
         </div>
       </div>
     </transition>
 
     <!-- Accuracy Message -->
-    <div class="accuracy-message" :class="accuracyIndicatorClass">
-      <i class="fas fa-info-circle"></i>
+    <div class="accuracy-tip" :class="accuracyIndicatorClass">
+      <i class="fas fa-shield-check" v-if="accuracyIndicatorClass === 'good'"></i>
+      <i class="fas fa-info-circle" v-else></i>
       <span>{{ accuracyMessage }}</span>
     </div>
   </div>
@@ -71,14 +73,14 @@ defineEmits(['get-location', 'refresh', 'show-tips'])
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1.5rem;
+  gap: 1.25rem;
   margin-bottom: 3.5rem;
 }
 
 .btn-gps {
-  padding: 1rem 2rem;
+  padding: 0.875rem 2.25rem;
   border-radius: 100px;
-  font-weight: 700;
+  font-weight: 800;
   display: flex;
   align-items: center;
   gap: 1rem;
@@ -86,14 +88,26 @@ defineEmits(['get-location', 'refresh', 'show-tips'])
   background: white;
   color: var(--primary);
   transition: var(--transition);
-  box-shadow: 0 8px 16px rgba(59, 130, 246, 0.1);
+  box-shadow: 0 8px 20px var(--primary-soft);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
 }
 
 .btn-gps:hover:not(:disabled) {
   background: var(--primary);
   color: white;
-  transform: translateY(-2px);
-  box-shadow: 0 12px 24px rgba(59, 130, 246, 0.2);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 28px var(--primary-soft);
+}
+
+.btn-gps:active:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.btn-gps:disabled {
+  opacity: 0.7;
+  cursor: wait;
 }
 
 .gps-icon-wrapper {
@@ -101,21 +115,22 @@ defineEmits(['get-location', 'refresh', 'show-tips'])
   display: flex;
   align-items: center;
   justify-content: center;
+  font-size: 1.25rem;
 }
 
 .gps-pulse {
   position: absolute;
-  width: 100%;
-  height: 100%;
+  width: 200%;
+  height: 200%;
   border-radius: 50%;
   background: var(--primary);
-  animation: pulse 1.5s infinite ease-out;
-  opacity: 0.5;
+  animation: pulse 2s infinite ease-out;
+  opacity: 0;
 }
 
 @keyframes pulse {
   0% {
-    transform: scale(1);
+    transform: scale(0.5);
     opacity: 0.5;
   }
   100% {
@@ -124,105 +139,103 @@ defineEmits(['get-location', 'refresh', 'show-tips'])
   }
 }
 
-.gps-info {
+.gps-status-card {
   display: flex;
-  gap: 1rem;
   align-items: center;
+  gap: 1rem;
+  background: white;
+  padding: 0.5rem 0.5rem 0.5rem 1rem;
+  border-radius: 100px;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--gray-100);
 }
 
-.accuracy-indicator {
-  padding: 0.75rem 1.5rem;
-  border-radius: 100px;
+.accuracy-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
   font-weight: 700;
   font-size: 0.8125rem;
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
+  padding: 0.5rem 1rem;
+  border-radius: 100px;
+  transition: var(--transition-fast);
 }
 
-.accuracy-indicator.good {
-  background: var(--success-light);
-  color: var(--success);
+.accuracy-badge.good {
+  background: #d1fae5;
+  color: #065f46;
 }
-.accuracy-indicator.medium {
-  background: var(--warning-light);
-  color: var(--warning);
+.accuracy-badge.medium {
+  background: #fef3c7;
+  color: #92400e;
 }
-.accuracy-indicator.poor {
-  background: var(--error-light);
-  color: var(--error);
+.accuracy-badge.poor {
+  background: #fee2e2;
+  color: #991b1b;
 }
 
 .gps-actions {
   display: flex;
-  gap: 0.5rem;
+  gap: 0.25rem;
 }
 
-.btn-refresh,
-.btn-help {
-  width: 40px;
-  height: 40px;
+.action-btn {
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
-  border: 1px solid var(--gray-200);
-  background: white;
-  color: var(--gray-500);
+  border: none;
+  background: var(--gray-50);
+  color: var(--gray-600);
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: var(--transition);
+  transition: var(--transition-fast);
+  cursor: pointer;
 }
 
-.btn-refresh:hover,
-.btn-help:hover {
-  border-color: var(--primary);
+.action-btn:hover {
+  background: var(--primary-soft);
   color: var(--primary);
+  transform: scale(1.1);
 }
 
-.accuracy-message {
+.accuracy-tip {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.625rem;
   font-size: 0.875rem;
-  font-weight: 500;
+  font-weight: 600;
+  color: var(--gray-500);
+  transition: var(--transition-fast);
 }
 
-.accuracy-message.info {
-  color: var(--gray-500);
+.accuracy-tip.good {
+  color: var(--secondary);
 }
-.accuracy-message.good {
-  color: var(--success);
-}
-.accuracy-message.medium {
+.accuracy-tip.medium {
   color: var(--warning);
 }
-.accuracy-message.poor {
-  color: var(--error);
+.accuracy-tip.poor {
+  color: var(--danger);
 }
 
-.animate-fade-in {
-  opacity: 0;
-  animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
+/* Transitions */
 .slide-up-enter-active,
 .slide-up-leave-active {
-  transition: all 0.3s ease-out;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .slide-up-enter-from,
 .slide-up-leave-to {
   opacity: 0;
-  transform: translateY(10px);
+  transform: translateY(15px);
+}
+
+@media (max-width: 640px) {
+  .btn-gps {
+    width: 100%;
+    justify-content: center;
+    padding: 1rem;
+  }
 }
 </style>

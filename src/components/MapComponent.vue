@@ -322,12 +322,21 @@ const toggleRouting = () => {
 
 .user-dot {
   background: #2563eb;
+  box-shadow:
+    0 0 12px #2563eb,
+    0 0 0 2px white;
 }
 .danger-dot {
   background: #dc2626;
+  box-shadow:
+    0 0 12px #dc2626,
+    0 0 0 2px white;
 }
 .safe-dot {
   background: #10b981;
+  box-shadow:
+    0 0 12px #10b981,
+    0 0 0 2px white;
 }
 
 /* Responsive */

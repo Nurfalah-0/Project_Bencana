@@ -55,7 +55,7 @@
 
       <div class="footer-bottom">
         <div class="bottom-left">
-          <p>&copy; {{ currentYear }} AquaSentinel Pro. Powered by Jatim Digital.</p>
+          <p>&copy; {{ currentYear }} AquaSentinel Pro. Powered by ESEMKA ENJE DIGITAL.</p>
         </div>
         <div class="bottom-right">
           <div class="social-pills">

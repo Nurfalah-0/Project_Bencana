@@ -1,33 +1,40 @@
 <template>
   <div class="emergency-section">
-    <div class="section-title">
-      <div class="title-icon"><i class="fas fa-shield-alt"></i></div>
-      <h3>Langkah Penyelamatan</h3>
+    <div class="section-header">
+      <div class="header-icon-box">
+        <i class="fas fa-shield-heart"></i>
+      </div>
+      <div class="header-content">
+        <h3 class="section-title">Protokol Keselamatan</h3>
+        <p class="section-subtitle">Langkah kritis untuk perlindungan diri & aset</p>
+      </div>
     </div>
 
-    <div class="steps-grid">
+    <div class="steps-container">
       <div
         v-for="(step, index) in actualSteps"
         :key="step.number"
         class="step-card glass-panel"
-        :class="{ 'is-urgent': step.urgent }"
-        :style="{ 'animation-delay': index * 0.1 + 's' }"
+        :class="{ urgent: step.urgent }"
+        :style="{ '--anim-delay': index * 0.15 + 's' }"
       >
-        <div class="step-header">
-          <div class="step-number">{{ step.number }}</div>
-          <div class="step-icon">
+        <div class="card-glow"></div>
+
+        <div class="step-top">
+          <div class="step-badge">Tahap {{ step.number }}</div>
+          <div class="step-icon-circle">
             <i :class="step.icon"></i>
           </div>
         </div>
 
-        <div class="step-content">
-          <h4>{{ step.title }}</h4>
-          <p>{{ step.description }}</p>
+        <div class="step-body">
+          <h4 class="step-title">{{ step.title }}</h4>
+          <p class="step-desc">{{ step.description }}</p>
         </div>
 
         <button class="btn-step-action" @click="handleAction(step.action)">
           <span>{{ step.buttonText }}</span>
-          <i class="fas fa-arrow-right"></i>
+          <i class="fas fa-chevron-right"></i>
         </button>
       </div>
     </div>
@@ -51,39 +58,38 @@ const props = defineProps({
 const emit = defineEmits(['show-evacuation-route', 'call-emergency', 'show-checklist'])
 
 const actualSteps = computed(() => {
-  const commonSteps = [
+  return [
     {
       number: 1,
-      title: 'Evakuasi',
+      title: 'Evakuasi Cepat',
       description:
         props.riskLevel === 'high'
-          ? `SEGERA ke ${props.nearestEvacuation?.name || 'titik aman'}.`
-          : 'Kenyali rute evakuasi terdekat.',
-      icon: 'fas fa-running',
+          ? `Segera menuju ke ${props.nearestEvacuation?.name || 'titik aman'} sekarang!`
+          : 'Kenali jalur evakuasi dan titik aman terdekat di lokasi Anda.',
+      icon: 'fas fa-person-running',
       action: 'showRoute',
-      buttonText: 'Rute',
+      buttonText: 'Cek Jalur',
       urgent: props.riskLevel === 'high'
     },
     {
       number: 2,
-      title: 'Bantuan',
-      description: 'Hubungi layanan darurat 112 jika terjebak.',
-      icon: 'fas fa-phone-volume',
+      title: 'Layanan Darurat',
+      description: 'Hubungi 112 jika Anda atau orang sekitar butuh pertolongan medis.',
+      icon: 'fas fa-phone-sparkles',
       action: 'callEmergency',
       buttonText: 'Panggil',
       urgent: false
     },
     {
       number: 3,
-      title: 'Persiapan',
-      description: 'Siapkan tas siaga bencana & dokumen penting.',
-      icon: 'fas fa-suitcase-medical',
+      title: 'Persiapan Logistik',
+      description: 'Pastikan Tas Siaga Bencana (TSB) sudah siap di dekat pintu utama.',
+      icon: 'fas fa-kit-medical',
       action: 'showChecklist',
-      buttonText: 'Cek List',
+      buttonText: 'Cek TSB',
       urgent: false
     }
   ]
-  return commonSteps
 })
 
 const handleAction = action => {
@@ -103,149 +109,63 @@ const handleAction = action => {
 
 <style scoped>
 .emergency-section {
-  margin-top: 1.5rem;
+  margin-top: 2rem;
 }
 
-.section-title {
+.section-header {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  margin-bottom: 1.5rem;
-}
-
-.title-icon {
-  width: 36px;
-  height: 36px;
-  background: rgba(255, 255, 255, 0.5);
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--gray-700);
-}
-
-.section-title h3 {
-  font-size: 1.25rem;
-  margin: 0;
-  color: var(--gray-800);
-}
-
-.steps-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
   gap: 1rem;
+  margin-bottom: 2rem;
 }
 
-.step-card {
-  padding: 1.25rem;
-  display: flex;
-  flex-direction: column;
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
-  animation: fadeUp 0.5s ease backwards;
-}
-
-.step-card:hover {
-  transform: translateY(-5px);
-  background: rgba(255, 255, 255, 0.8);
-}
-
-.step-card.is-urgent {
-  background: linear-gradient(145deg, rgba(254, 226, 226, 0.5), rgba(255, 255, 255, 0.6));
-  border: 1px solid rgba(239, 68, 68, 0.3);
-}
-
-.step-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 1rem;
-}
-
-.step-number {
-  font-size: 3rem;
-  font-weight: 900;
-  color: rgba(0, 0, 0, 0.05);
-  line-height: 0.8;
-  position: absolute;
-  top: 0.5rem;
-  left: 0.5rem;
-  pointer-events: none;
-}
-
-.step-icon {
-  width: 40px;
-  height: 40px;
-  background: white;
+.header-icon-box {
+  width: 44px;
+  height: 44px;
+  background: var(--primary-soft);
+  color: var(--primary);
   border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--primary);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-  z-index: 1;
+  font-size: 1.25rem;
 }
 
-.step-content {
-  flex: 1;
-  margin-bottom: 1rem;
-  z-index: 1;
-}
-
-.step-content h4 {
-  font-size: 1rem;
-  margin: 0 0 0.25rem 0;
+.section-title {
+  font-size: 1.125rem;
+  font-weight: 800;
+  margin: 0;
   color: var(--gray-900);
 }
 
-.step-content p {
-  font-size: 0.8rem;
-  color: var(--gray-600);
-  margin: 0;
-  line-height: 1.4;
+.section-subtitle {
+  font-size: 0.8125rem;
+  color: var(--gray-500);
+  font-weight: 500;
+  margin: 0.125rem 0 0 0;
 }
 
-.btn-step-action {
-  width: 100%;
-  padding: 0.6rem;
-  border-radius: 10px;
-  border: none;
+.steps-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+}
+
+.step-card {
   background: white;
-  color: var(--primary);
-  font-weight: 700;
-  font-size: 0.8rem;
-  cursor: pointer;
+  padding: 1.5rem;
+  border-radius: 20px;
+  border: 1px solid var(--gray-100);
   display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  transition: all 0.2s;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-  z-index: 1;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+  transition: var(--transition);
+  animation: revealUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+  animation-delay: var(--anim-delay);
 }
 
-.btn-step-action:hover {
-  background: var(--primary);
-  color: white;
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(37, 99, 235, 0.2);
-}
-
-.is-urgent .step-icon {
-  color: var(--danger);
-}
-
-.is-urgent .btn-step-action {
-  background: var(--danger);
-  color: white;
-}
-
-.is-urgent .btn-step-action:hover {
-  background: #b91c1c;
-}
-
-@keyframes fadeUp {
+@keyframes revealUp {
   from {
     opacity: 0;
     transform: translateY(20px);
@@ -256,28 +176,148 @@ const handleAction = action => {
   }
 }
 
-@media (max-width: 768px) {
-  .steps-grid {
+.step-card:hover {
+  transform: translateY(-8px);
+  border-color: var(--primary-soft);
+  box-shadow: var(--shadow-lg);
+}
+
+.card-glow {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100px;
+  height: 100px;
+  background: radial-gradient(circle, var(--primary-soft) 0%, transparent 70%);
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+.step-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
+}
+
+.step-badge {
+  font-size: 0.625rem;
+  font-weight: 800;
+  color: var(--gray-400);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: var(--gray-50);
+  padding: 0.25rem 0.625rem;
+  border-radius: 100px;
+}
+
+.step-icon-circle {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: var(--gray-50);
+  color: var(--gray-600);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  transition: var(--transition-fast);
+}
+
+.step-card:hover .step-icon-circle {
+  background: var(--primary);
+  color: white;
+  transform: scale(1.1) rotate(5deg);
+}
+
+.step-body {
+  flex: 1;
+}
+
+.step-title {
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--gray-900);
+  margin-bottom: 0.5rem;
+}
+
+.step-desc {
+  font-size: 0.8125rem;
+  color: var(--gray-600);
+  line-height: 1.5;
+  margin-bottom: 1.5rem;
+  font-weight: 500;
+}
+
+.btn-step-action {
+  width: 100%;
+  padding: 0.75rem;
+  border-radius: 12px;
+  background: var(--gray-50);
+  border: 1px solid var(--gray-100);
+  color: var(--gray-800);
+  font-weight: 700;
+  font-size: 0.8125rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.btn-step-action:hover {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+  transform: translateY(-2px);
+}
+
+/* Urgent Styling */
+.step-card.urgent {
+  background: linear-gradient(135deg, #fffafa, #fff5f5);
+  border-color: #feb2b2;
+}
+
+.step-card.urgent .step-icon-circle {
+  background: #fee2e2;
+  color: #dc2626;
+}
+.step-card.urgent:hover .step-icon-circle {
+  background: #dc2626;
+  color: white;
+}
+.step-card.urgent .btn-step-action {
+  background: #dc2626;
+  color: white;
+  border: none;
+}
+.step-card.urgent .btn-step-action:hover {
+  background: #991b1b;
+}
+
+@media (max-width: 900px) {
+  .steps-container {
     grid-template-columns: 1fr;
   }
   .step-card {
     flex-direction: row;
+    gap: 1.5rem;
     align-items: center;
-    gap: 1rem;
-    padding: 1rem;
   }
-  .step-header {
+  .step-top {
     margin: 0;
+    order: -1;
   }
-  .step-content {
+  .step-badge {
+    display: none;
+  }
+  .step-body {
     margin: 0;
   }
   .btn-step-action {
     width: auto;
-    padding: 0.5rem 1rem;
-  }
-  .step-number {
-    display: none;
+    padding: 0.75rem 1.25rem;
   }
 }
 </style>

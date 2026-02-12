@@ -1,69 +1,87 @@
 <template>
   <section class="hero-section">
-    <!-- Decorative Blobs -->
+    <!-- Sophisticated Background Elements -->
     <div class="blob blob-1"></div>
     <div class="blob blob-2"></div>
+    <div class="hero-overlay"></div>
 
     <div class="container">
       <div class="hero-content">
-        <div class="hero-badge animate-fade-in" style="animation-delay: 0.1s">
-          <i class="fas fa-shield-virus"></i> Siaga Banjir AI
+        <div class="hero-badge animate-reveal">
+          <div class="badge-content">
+            <i class="fas fa-shield-check"></i>
+            <span>AI FLOOD SHIELD v2.0</span>
+          </div>
         </div>
-        <h1 class="animate-fade-in" style="animation-delay: 0.2s">AquaSentinel</h1>
-        <h2 class="animate-fade-in" style="animation-delay: 0.3s">
-          Sistem Peringatan Dini Banjir Jawa Timur
+
+        <h1 class="hero-title animate-reveal" style="animation-delay: 0.1s">AquaSentinel</h1>
+
+        <h2 class="hero-subtitle animate-reveal" style="animation-delay: 0.2s">
+          Sistem Peringatan Dini Banjir <span class="highlight">Jawa Timur</span>
         </h2>
-        <p class="subtitle animate-fade-in" style="animation-delay: 0.4s">
-          Deteksi risiko banjir real-time berbasis AI untuk keselamatan Anda dan keluarga
+
+        <p class="hero-description animate-reveal" style="animation-delay: 0.3s">
+          Deteksi risiko banjir real-time berbasis AI untuk keselamatan Anda dan keluarga dengan
+          akurasi pemosisian tinggi.
         </p>
 
-        <!-- Search Box -->
-        <SearchBox
-          v-model:searchQuery="searchQuery"
-          :showSuggestions="showSuggestions"
-          :filteredSuggestions="filteredSuggestions"
-          :isLocationSaved="isLocationSaved"
-          :isDetecting="isDetecting"
-          :hasLocation="!!(selectedLocation || gpsLocation)"
-          @select-suggestion="selectSuggestion"
-          @toggle-save="toggleSaveLocation"
-          @detect-risk="detectFloodRisk"
-          @focus="handleFocus"
-          @blur="handleBlur"
-        />
+        <!-- Search Box Integration -->
+        <div class="hero-main-action animate-reveal" style="animation-delay: 0.4s">
+          <SearchBox
+            v-model:searchQuery="searchQuery"
+            :showSuggestions="showSuggestions"
+            :filteredSuggestions="filteredSuggestions"
+            :isLocationSaved="isLocationSaved"
+            :isDetecting="isDetecting"
+            :hasLocation="!!(selectedLocation || gpsLocation)"
+            @select-suggestion="selectSuggestion"
+            @toggle-save="toggleSaveLocation"
+            @detect-risk="detectFloodRisk"
+            @focus="handleFocus"
+            @blur="handleBlur"
+          />
+        </div>
 
-        <!-- GPS Control -->
-        <GPSControl
-          :gpsButtonClass="gpsButtonClass"
-          :gpsButtonIcon="gpsButtonIcon"
-          :gpsButtonText="gpsButtonText"
-          :isGettingLocation="isGettingLocation"
-          :showGPSStatus="showGPSStatus"
-          :gpsAccuracyClass="gpsAccuracyClass"
-          :gpsStatusText="gpsStatusText"
-          :accuracyIndicatorClass="accuracyIndicatorClass"
-          :accuracyMessage="accuracyMessage"
-          @get-location="getUserLocation"
-          @refresh="refreshLocation"
-          @show-tips="showGPSTips"
-        />
+        <!-- GPS Control Integration -->
+        <div class="hero-gps-action animate-reveal" style="animation-delay: 0.5s">
+          <GPSControl
+            :gpsButtonClass="gpsButtonClass"
+            :gpsButtonIcon="gpsButtonIcon"
+            :gpsButtonText="gpsButtonText"
+            :isGettingLocation="isGettingLocation"
+            :showGPSStatus="showGPSStatus"
+            :gpsAccuracyClass="gpsAccuracyClass"
+            :gpsStatusText="gpsStatusText"
+            :accuracyIndicatorClass="accuracyIndicatorClass"
+            :accuracyMessage="accuracyMessage"
+            @get-location="getUserLocation"
+            @refresh="refreshLocation"
+            @show-tips="showGPSTips"
+          />
+        </div>
 
         <!-- Map Display -->
-        <transition name="scale">
-          <div v-if="showMap" class="hero-map-container">
-            <div id="hero-map" ref="mapContainer"></div>
+        <transition name="scale-fade">
+          <div v-if="showMap" class="hero-map-wrapper animate-reveal" style="animation-delay: 0.2s">
+            <div class="map-container-inner">
+              <div id="hero-map" ref="mapContainer"></div>
+              <div class="map-overlay-info">
+                <i class="fas fa-location-crosshairs"></i>
+                <span>Live Location Tracking</span>
+              </div>
+            </div>
           </div>
         </transition>
 
-        <!-- Features -->
-        <div class="features">
+        <!-- Features Grid -->
+        <div class="features-grid">
           <FeatureItem
             v-for="(feature, index) in features"
             :key="feature.title"
             :icon="feature.icon"
             :title="feature.title"
             :description="feature.description"
-            :delay="0.7 + index * 0.1 + 's'"
+            :delay="0.6 + index * 0.1 + 's'"
           />
         </div>
       </div>
@@ -72,13 +90,12 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted, inject, watch } from 'vue'
+import { ref, computed, onMounted, inject, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useGPS } from '../composables/useGPS'
-import { searchLocations, CONFIG } from '../utils/constants'
+import { searchLocations } from '../utils/constants'
 import { useLocationStore } from '../stores/locationStore'
 import { useMap } from '../composables/useMap'
-import { calculateDistance } from '../utils/helpers'
 
 // Components
 import SearchBox from './hero/SearchBox.vue'
@@ -111,17 +128,29 @@ watch(searchQuery, newVal => {
 
 const features = ref([
   {
-    icon: 'fas fa-bolt',
+    icon: 'fas fa-bolt-lightning',
     title: 'Real-time Tracking',
-    description: 'Posisi live dengan akurasi tinggi'
+    description: 'Update posisi live dengan presisi milimeter'
   },
-  { icon: 'fas fa-brain', title: 'AI Prediction', description: 'Prediksi banjir berbasis AI' },
-  { icon: 'fas fa-robot', title: 'SiagaBot 24/7', description: 'Asisten virtual siap membantu' },
-  { icon: 'fas fa-bell', title: 'Notifikasi Darurat', description: 'Peringatan langsung ke ponsel' }
+  {
+    icon: 'fas fa-microchip',
+    title: 'AI Engine',
+    description: 'Prediksi risiko banjir berbasis mesin pembelajaran'
+  },
+  {
+    icon: 'fas fa-cloud-bolt',
+    title: 'Radar Curah Hujan',
+    description: 'Pantauan cuaca ekstrem langsung dari BMKG'
+  },
+  {
+    icon: 'fas fa-bell',
+    title: 'Siaga Dini',
+    description: 'Notifikasi instan saat level air meningkat'
+  }
 ])
 
 // GPS Composable
-const { getLocation, accuracy, accuracyLevel, isGPSLoading, gpsError, refreshLocation } = useGPS()
+const { getLocation, accuracy, accuracyLevel, gpsError, refreshLocation } = useGPS()
 const locationStore = useLocationStore()
 const showGPSTipsModal = inject('showGPSTipsModal')
 
@@ -133,30 +162,22 @@ onMounted(() => {
   locationStore.loadSavedLocations()
 
   if (!navigator.geolocation) {
-    toast('Browser Anda tidak mendukung GPS. Gunakan Chrome/Firefox terbaru.', 'warning')
+    toast('Browser Anda tidak mendukung GPS.', 'warning')
   }
 
-  // Check for query params (from SavedLocationsView)
+  // Check for query params
   if (route.query.lat && route.query.lng && route.query.address) {
     const lat = parseFloat(route.query.lat)
     const lng = parseFloat(route.query.lng)
     const address = route.query.address
 
     searchQuery.value = address
-    selectedLocation.value = {
-      lat,
-      lng,
-      displayName: address
-    }
+    selectedLocation.value = { lat, lng, displayName: address }
 
     showMap.value = true
     setTimeout(() => {
       initMap('hero-map', [lat, lng]).then(inst => {
         mapInstance.value = inst
-        // Leaflet event listeners can be added here if needed
-        mapInstance.value.on('click', e => {
-          console.log('Map clicked at:', e.latlng.lat, e.latlng.lng)
-        })
       })
     }, 500)
   }
@@ -170,21 +191,21 @@ const filteredSuggestions = computed(() => {
 const gpsButtonClass = computed(() => {
   if (isGettingLocation.value) return 'gps-loading'
   if (gpsError.value) return 'gps-error'
-  return accuracyLevel.value || 'medium'
+  return accuracyLevel.value || ''
 })
 
 const gpsButtonIcon = computed(() => {
-  if (isGettingLocation.value) return 'fas fa-spinner fa-spin'
-  if (gpsError.value) return 'fas fa-exclamation-triangle'
-  return 'fas fa-location-dot'
+  if (isGettingLocation.value) return 'fas fa-circle-notch fa-spin'
+  if (gpsError.value) return 'fas fa-triangle-exclamation'
+  return 'fas fa-crosshairs'
 })
 
 const gpsButtonText = computed(() => {
-  if (isGettingLocation.value) return 'Mendeteksi GPS...'
-  if (gpsError.value) return 'Gagal Deteksi'
-  if (accuracyLevel.value === 'good') return 'GPS Akurat'
-  if (accuracyLevel.value === 'medium') return 'GPS Sedang'
-  return 'Gunakan Lokasi Saya'
+  if (isGettingLocation.value) return 'Mensinkronkan GPS...'
+  if (gpsError.value) return 'GPS Bermasalah'
+  if (accuracyLevel.value === 'good') return 'Sinyal GPS Optimal'
+  if (accuracyLevel.value === 'medium') return 'Sinyal GPS Stabil'
+  return 'Deteksi Posisi Saya'
 })
 
 const accuracyIndicatorClass = computed(() => {
@@ -193,13 +214,12 @@ const accuracyIndicatorClass = computed(() => {
 })
 
 const accuracyMessage = computed(() => {
-  if (isGettingLocation.value) return 'Mendeteksi lokasi dengan akurasi tinggi...'
+  if (isGettingLocation.value) return 'Mencari koordinat satelit...'
   if (accuracy.value > 0) {
-    if (accuracyLevel.value === 'good') return `Akurasi tinggi (±${Math.round(accuracy.value)}m)`
-    if (accuracyLevel.value === 'medium') return `Akurasi sedang (±${Math.round(accuracy.value)}m)`
-    return `Akurasi rendah (±${Math.round(accuracy.value)}m) - Gunakan area terbuka`
+    if (accuracyLevel.value === 'good') return `Akurasi optimal (±${Math.round(accuracy.value)}m)`
+    return `Akurasi sedang (±${Math.round(accuracy.value)}m) - Cek ruang terbuka`
   }
-  return 'Tekan tombol GPS untuk mendeteksi lokasi Anda'
+  return 'Gunakan GPS untuk data paling akurat'
 })
 
 const showGPSStatus = computed(() => {
@@ -210,9 +230,7 @@ const gpsAccuracyClass = computed(() => accuracyLevel.value || 'medium')
 
 const gpsStatusText = computed(() => {
   const meters = Math.round(accuracy.value)
-  if (accuracyLevel.value === 'good') return `GPS Akurat (±${meters}m)`
-  if (accuracyLevel.value === 'medium') return `GPS Sedang (±${meters}m)`
-  return `GPS Lemah (±${meters}m)`
+  return `Presisi: ±${meters}m`
 })
 
 const isLocationSaved = computed(() => {
@@ -241,10 +259,10 @@ const toggleSaveLocation = () => {
 
   if (isLocationSaved.value) {
     locationStore.removeLocation(locationData)
-    toast('Lokasi dihapus dari tersimpan', 'info')
+    toast('Lokasi dihapus', 'info')
   } else {
     locationStore.addLocation(locationData)
-    toast('Lokasi berhasil disimpan!', 'success')
+    toast('Lokasi disimpan!', 'success')
   }
 }
 
@@ -269,10 +287,6 @@ const selectSuggestion = suggestion => {
   setTimeout(() => {
     initMap('hero-map', [suggestion.lat, suggestion.lng]).then(inst => {
       mapInstance.value = inst
-      // Leaflet event listeners can be added here if needed
-      mapInstance.value.on('click', e => {
-        console.log('Map clicked at:', e.latlng.lat, e.latlng.lng)
-      })
     })
   }, 100)
 }
@@ -282,7 +296,7 @@ const getUserLocation = async () => {
   try {
     const location = await getLocation()
     gpsLocation.value = location
-    searchQuery.value = `Lokasi GPS (${location.lat.toFixed(4)}, ${location.lng.toFixed(4)})`
+    searchQuery.value = `📍 Lokasi GPS Aktif`
 
     showMap.value = true
     setTimeout(() => {
@@ -295,7 +309,7 @@ const getUserLocation = async () => {
     await detectFloodRisk(true)
   } catch (error) {
     console.error('GPS Error:', error)
-    toast('Gagal mendapatkan lokasi GPS', 'error')
+    toast('GPS tidak terdeteksi', 'error')
   } finally {
     isGettingLocation.value = false
   }
@@ -303,7 +317,7 @@ const getUserLocation = async () => {
 
 const detectFloodRisk = async (autoDetect = false) => {
   if (!searchQuery.value.trim() && !autoDetect) {
-    toast('Silakan masukkan alamat atau gunakan GPS terlebih dahulu', 'warning')
+    toast('Input alamat atau gunakan GPS', 'warning')
     return
   }
 
@@ -320,12 +334,11 @@ const detectFloodRisk = async (autoDetect = false) => {
       lng = selectedLocation.value.lng
       address = selectedLocation.value.displayName
     } else {
-      toast('Pilih lokasi dari suggestions atau gunakan GPS', 'warning')
+      toast('Lokasi tidak valid', 'warning')
       isDetecting.value = false
       return
     }
 
-    // Call store action
     locationStore.detectFloodRiskForLocation(lat, lng)
     const riskData = locationStore.floodRisk
 
@@ -348,303 +361,90 @@ const detectFloodRisk = async (autoDetect = false) => {
       }
     })
 
-    toast('Risiko banjir berhasil dideteksi', 'success')
+    toast('Analisis risiko selesai', 'success')
   } catch (error) {
     console.error('Detection error:', error)
-    toast('Gagal mendeteksi risiko banjir. Coba lagi.', 'error')
+    toast('Gagal menganalisis risiko', 'error')
   } finally {
     isDetecting.value = false
   }
 }
 
 const getSignalStrength = accuracy => {
-  if (accuracy < 20) return 'Sangat Kuat'
+  if (accuracy < 20) return 'Ekselen'
   if (accuracy < 50) return 'Kuat'
-  if (accuracy < 100) return 'Sedang'
-  if (accuracy < 200) return 'Lemah'
-  return 'Sangat Lemah'
+  if (accuracy < 100) return 'Cukup'
+  return 'Lemah'
 }
 </script>
 
 <style scoped>
 .hero-badge {
   display: inline-flex;
+  margin-bottom: 2rem;
+}
+
+.badge-content {
+  display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.625rem;
   padding: 0.5rem 1.25rem;
-  background: var(--primary-light);
+  background: var(--primary-soft);
   color: var(--primary);
   border-radius: 100px;
-  font-weight: 700;
+  font-weight: 800;
   font-size: 0.75rem;
-  text-transform: uppercase;
   letter-spacing: 0.05em;
-  margin-bottom: 2rem;
-  border: 1px solid hsla(var(--primary-h), var(--primary-s), 90%, 0.5);
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
+  border: 1px solid hsla(var(--primary-h), var(--primary-s), 50%, 0.1);
+  box-shadow: 0 4px 12px var(--primary-soft);
 }
 
-.hero-content h1 {
-  font-size: clamp(2rem, 7vw, 4.5rem);
-  margin-bottom: 1.5rem;
-  line-height: 1.1;
+.hero-title {
   font-weight: 900;
-  letter-spacing: -0.02em;
-  background: linear-gradient(135deg, var(--primary), var(--accent));
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  margin-bottom: 1rem;
 }
 
-.hero-content h2 {
-  font-size: clamp(1.25rem, 4vw, 2rem);
-  font-weight: 700;
+.hero-subtitle {
   margin-bottom: 1.5rem;
-  color: var(--gray-900);
+  font-weight: 700;
 }
 
-.subtitle {
-  font-size: 1.25rem;
-  max-width: 600px;
+.hero-description {
+  font-size: clamp(1.125rem, 3vw, 1.25rem);
+  max-width: 700px;
   margin: 0 auto 3.5rem;
   color: var(--gray-600);
+  line-height: 1.7;
   font-weight: 500;
 }
 
-.search-box {
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid var(--glass-border);
-  border-radius: var(--radius-xl);
-  padding: 1.25rem;
-  box-shadow: var(--shadow-lg);
-  margin-bottom: 2.5rem;
+.hero-main-action {
+  max-width: 800px;
+  margin: 0 auto 2rem;
   position: relative;
-  z-index: 100;
-  transition: var(--transition);
+  z-index: 1000; /* Extremely high to beat any sibling overlays */
 }
 
-.search-box:focus-within {
-  background: white;
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-xl);
+.hero-gps-action {
+  margin: 0 auto 5rem;
+  position: relative;
+  z-index: 50;
 }
 
-.search-input {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
+/* Map Refinement */
+.hero-map-wrapper {
+  margin: 3rem auto 5rem;
+  max-width: 1000px;
   position: relative;
 }
 
-.search-input > i {
-  position: absolute;
-  left: 1.5rem;
-  color: var(--primary);
-  font-size: 1.25rem;
-}
-
-.search-input input {
-  flex: 1;
-  border: 1px solid var(--gray-100);
-  padding: 1.25rem 1.25rem 1.25rem 3.5rem;
-  border-radius: var(--radius-lg);
-  font-size: 1.125rem;
-  font-weight: 500;
-  transition: var(--transition);
-  background: var(--gray-50);
-}
-
-.search-input input:focus {
-  outline: none;
-  background: white;
-  border-color: var(--primary);
-  box-shadow: 0 0 0 4px var(--primary-light);
-}
-
-.search-actions {
-  display: flex;
-  gap: 0.75rem;
-  align-items: center;
-}
-
-.btn-detect {
-  min-width: 180px;
-  justify-content: center;
-  height: 56px;
-  font-size: 1rem;
-  font-weight: 700;
-}
-
-.btn-bookmark {
-  width: 56px;
-  height: 56px;
-  border-radius: var(--radius-lg);
-  background: var(--gray-50);
-  border: 1px solid var(--gray-200);
-  color: var(--gray-400);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: var(--transition);
-}
-
-.btn-bookmark:hover {
-  background: white;
-  border-color: var(--primary);
-  color: var(--primary);
-}
-
-.btn-bookmark.saved {
-  background: var(--primary-light);
-  border-color: var(--primary);
-  color: var(--primary);
-}
-
-/* Suggestions */
-.suggestions {
-  position: absolute;
-  top: calc(100% + 1rem);
-  left: 0;
-  right: 0;
-  background: white;
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-xl);
-  border: 1px solid var(--gray-100);
-  overflow: hidden;
-  z-index: 1000;
-}
-
-.suggestion-item {
-  padding: 1.25rem 1.5rem;
-  display: flex;
-  align-items: center;
-  gap: 1.25rem;
-  cursor: pointer;
-  transition: var(--transition);
-}
-
-.suggestion-item:hover {
-  background: var(--primary-light);
-}
-
-.suggestion-icon {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: var(--gray-50);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--primary);
-  transition: var(--transition);
-}
-
-.suggestion-item:hover .suggestion-icon {
-  background: white;
-  transform: scale(1.1);
-}
-
-.suggestion-text {
-  display: flex;
-  flex-direction: column;
-}
-
-.suggestion-name {
-  font-weight: 700;
-  color: var(--gray-900);
-}
-
-.suggestion-meta {
-  font-size: 0.8125rem;
-  color: var(--gray-500);
-}
-
-/* GPS Section */
-.gps-section {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1.5rem;
-  margin-bottom: 3.5rem;
-}
-
-.btn-gps {
-  padding: 1rem 2rem;
-  border-radius: 100px;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  border: 2px solid var(--primary);
-  background: white;
-  color: var(--primary);
-  transition: var(--transition);
-  box-shadow: 0 8px 16px rgba(59, 130, 246, 0.1);
-}
-
-.btn-gps:hover:not(:disabled) {
-  background: var(--primary);
-  color: white;
-  transform: translateY(-2px);
-  box-shadow: 0 12px 24px rgba(59, 130, 246, 0.2);
-}
-
-.gps-icon-wrapper {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.gps-pulse {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  background: var(--primary);
-  animation: pulse 1.5s infinite ease-out;
-  opacity: 0.5;
-}
-
-@keyframes pulse {
-  0% {
-    transform: scale(1);
-    opacity: 0.5;
-  }
-  100% {
-    transform: scale(2.5);
-    opacity: 0;
-  }
-}
-
-.gps-info {
-  display: flex;
-  gap: 1rem;
-  align-items: center;
-}
-
-/* Accuracy indicator refinement */
-.accuracy-indicator {
-  padding: 0.75rem 1.5rem;
-  border-radius: 100px;
-  font-weight: 700;
-  font-size: 0.8125rem;
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-/* Map */
-.hero-map-container {
-  margin-top: 1rem;
-  margin-bottom: 4rem;
+.map-container-inner {
   border-radius: var(--radius-xl);
   overflow: hidden;
   box-shadow: var(--shadow-xl);
   border: 1px solid var(--glass-border);
-  height: 500px;
+  height: clamp(350px, 50vh, 550px);
+  position: relative;
 }
 
 #hero-map {
@@ -652,144 +452,73 @@ const getSignalStrength = accuracy => {
   height: 100%;
 }
 
-/* Features */
-.features {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 1.5rem;
-  margin-top: 2rem;
-}
-
-.feature {
-  background: white;
-  padding: 1.75rem;
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--gray-100);
-  display: flex;
-  align-items: flex-start;
-  gap: 1.5rem;
-  text-align: left;
-  transition: var(--transition);
-  box-shadow: var(--shadow-sm);
-}
-
-.feature:hover {
-  transform: translateY(-8px);
-  box-shadow: var(--shadow-lg);
-  border-color: var(--primary-light);
-}
-
-.feature-icon {
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
-  background: var(--primary-light);
-  color: var(--primary);
+.map-overlay-info {
+  position: absolute;
+  top: 1.5rem;
+  left: 1.5rem;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(8px);
+  padding: 0.75rem 1.25rem;
+  border-radius: 100px;
   display: flex;
   align-items: center;
-  justify-content: center;
-  font-size: 1.25rem;
-  flex-shrink: 0;
+  gap: 0.75rem;
+  font-weight: 700;
+  font-size: 0.8125rem;
+  color: var(--primary);
+  box-shadow: var(--shadow-md);
+  z-index: 500;
+  pointer-events: none;
 }
 
-.feature-text h4 {
-  font-size: 1.125rem;
-  margin-bottom: 0.5rem;
-}
-
-.feature-text p {
-  font-size: 0.875rem;
-  color: var(--gray-600);
-  line-height: 1.5;
-  margin: 0;
+/* Features Grid */
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-top: 4rem;
+  position: relative;
+  z-index: 10;
 }
 
 /* Animations */
-.animate-fade-in {
+.animate-reveal {
   opacity: 0;
-  animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  transform: translateY(20px);
+  animation: reveal 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-.animate-scale-in {
-  opacity: 0;
-  transform: scale(0.95);
-  animation: scaleIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
+@keyframes reveal {
   to {
     opacity: 1;
     transform: translateY(0);
   }
 }
 
-@keyframes scaleIn {
-  from {
-    opacity: 0;
-    transform: scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
+.scale-fade-enter-active,
+.scale-fade-leave-active {
+  transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Transitions */
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.3s;
-}
-.fade-enter-from,
-.fade-leave-to {
+.scale-fade-enter-from,
+.scale-fade-leave-to {
   opacity: 0;
-}
-
-.slide-up-enter-active,
-.slide-up-leave-active {
-  transition: all 0.3s;
-}
-.slide-up-enter-from,
-.slide-up-leave-to {
-  transform: translateY(10px);
-  opacity: 0;
+  transform: scale(0.95);
 }
 
 @media (max-width: 768px) {
-  .hero-section {
-    padding: 4rem 0;
+  .hero-description {
+    margin-bottom: 2.5rem;
   }
 
-  .hero-content h1 {
-    font-size: clamp(2rem, 10vw, 3rem);
-    margin-bottom: 1.5rem;
+  .features-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
   }
 
-  .search-input {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 0.75rem;
-  }
-
-  .search-input input {
-    padding-right: 1.25rem;
-    padding-left: 1.25rem;
-  }
-
-  .search-input > i {
-    display: none;
-  }
-
-  .search-actions {
-    width: 100%;
-    justify-content: space-between;
-  }
-
-  .btn-detect {
-    flex: 1;
+  .map-container-inner {
+    height: 350px;
+    border-radius: var(--radius-lg);
   }
 }
 </style>

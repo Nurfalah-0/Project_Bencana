@@ -1,73 +1,65 @@
 <template>
   <div class="risk-card glass-panel" :class="riskLevel">
     <!-- Header with animated icon -->
-    <div class="card-header">
+    <header class="card-header">
       <div class="risk-icon-wrapper">
         <i :class="riskIcon"></i>
         <div class="pulse-ring"></div>
       </div>
       <div class="header-content">
-        <h4>{{ riskTitle }}</h4>
+        <h4 class="card-title">{{ riskTitle }}</h4>
         <div class="badge-group">
           <span class="risk-badge">{{ riskLevel.toUpperCase() }}</span>
-          <span class="conf-badge">Akurasi AI: {{ riskPercentage }}%</span>
+          <span class="conf-badge">AI Confidence: {{ riskPercentage }}%</span>
         </div>
       </div>
-    </div>
+    </header>
 
     <div class="card-body">
       <!-- Risk Description -->
       <p class="risk-desc">{{ riskDescription }}</p>
 
       <!-- Advanced Meter -->
-      <div class="risk-meter-wrapper">
+      <div class="risk-meter-container">
         <div class="meter-labels">
-          <span>Aman</span>
-          <span>Waspada</span>
-          <span>Bahaya</span>
+          <span class="label-low">Aman</span>
+          <span class="label-high">Bahaya</span>
         </div>
         <div class="meter-track">
           <div class="meter-fill" :style="{ width: riskPercentage + '%' }"></div>
-          <div class="meter-marker" :style="{ left: riskPercentage + '%' }">
-            <div class="marker-tooltip">{{ riskPercentage }}%</div>
+          <div class="meter-thumb" :style="{ left: riskPercentage + '%' }">
+            <div class="thumb-point"></div>
           </div>
         </div>
       </div>
 
       <!-- Info Grid -->
-      <div class="info-grid">
-        <div class="info-item">
-          <i class="fas fa-hourglass-half"></i>
-          <div>
-            <span class="label">Prediksi</span>
-            <span class="value">{{ predictionTime }}</span>
+      <div class="info-row">
+        <div class="info-box">
+          <div class="info-icon"><i class="fas fa-clock-three"></i></div>
+          <div class="info-data">
+            <span class="info-label">Prediksi</span>
+            <span class="info-value">{{ predictionTime }}</span>
           </div>
         </div>
-        <div class="info-item">
-          <i class="fas fa-water"></i>
-          <div>
-            <span class="label">Air</span>
-            <span class="value">{{ waterLevel }}</span>
-          </div>
-        </div>
-        <div class="info-item">
-          <i class="fas fa-users"></i>
-          <div>
-            <span class="label">Evakuasi</span>
-            <span class="value">{{ evacuationPoints }} Titik</span>
+        <div class="info-box">
+          <div class="info-icon"><i class="fas fa-droplet"></i></div>
+          <div class="info-data">
+            <span class="info-label">Debit Air</span>
+            <span class="info-value">{{ waterLevel }}</span>
           </div>
         </div>
       </div>
 
-      <!-- Enhanced Recommendations -->
-      <div class="recommendations-box">
-        <div class="rec-title">
-          <i class="fas fa-clipboard-check"></i>
-          <span>Rekomendasi Tindakan</span>
+      <!-- Recommendations -->
+      <div class="actions-container">
+        <div class="actions-header">
+          <i class="fas fa-list-check"></i>
+          <span>Rekomendasi Utama</span>
         </div>
-        <ul class="rec-list">
-          <li v-for="(rec, index) in recommendations" :key="index">
-            <i class="fas fa-check"></i>
+        <ul class="actions-list">
+          <li v-for="(rec, index) in recommendations" :key="index" class="action-item">
+            <i class="fas fa-circle-check"></i>
             <span>{{ rec }}</span>
           </li>
         </ul>
@@ -109,18 +101,18 @@ const props = defineProps({
 
 const riskTitle = computed(() => {
   const titles = {
-    high: 'Terdeteksi Risiko Tinggi',
-    medium: 'Waspada Risiko Sedang',
-    low: 'Situasi Terpantau Aman'
+    high: 'Risiko Banjir Tinggi',
+    medium: 'Risiko Banjir Sedang',
+    low: 'Area Terpantau Aman'
   }
   return titles[props.riskLevel] || 'Analisis Risiko'
 })
 
 const riskIcon = computed(() => {
   const icons = {
-    high: 'fas fa-exclamation-triangle',
-    medium: 'fas fa-exclamation-circle',
-    low: 'fas fa-shield-alt'
+    high: 'fas fa-tornado',
+    medium: 'fas fa-cloud-showers-heavy',
+    low: 'fas fa-shield-check'
   }
   return icons[props.riskLevel] || 'fas fa-info-circle'
 })
@@ -128,19 +120,19 @@ const riskIcon = computed(() => {
 const recommendations = computed(() => {
   const recs = {
     high: [
-      'Segera menuju titik evakuasi terdekat',
-      'Matikan aliran listrik utama',
-      'Amankan dokumen penting di tempat tinggi'
+      'Segera evakuasi ke titik aman terdekat',
+      'Putuskan aliran listrik di rumah',
+      'Pindahkan aset berharga ke lantai atas'
     ],
     medium: [
-      'Siapkan tas siaga bencana',
-      'Pantau terus informasi cuaca',
-      'Bersihkan saluran air di sekitar'
+      'Siapkan tas siaga darurat',
+      'Pantau curah hujan secara periodik',
+      'Pastikan drainase tidak terstop'
     ],
     low: [
-      'Tetap memantau prakiraan cuaca',
-      'Pastikan drainase tidak tersumbat',
-      'Simpan nomor darurat penting'
+      'Pantau prakiraan cuaca harian',
+      'Jaga kebersihan selokan sekitar',
+      'Simpan kontak darurat 112'
     ]
   }
   return recs[props.riskLevel] || []
@@ -149,10 +141,11 @@ const recommendations = computed(() => {
 
 <style scoped>
 .risk-card {
-  border-radius: var(--radius-xl);
+  border-radius: var(--radius-lg);
   overflow: hidden;
-  transition: all 0.3s ease;
-  position: relative;
+  transition: var(--transition);
+  background: white;
+  border: 1px solid var(--gray-100);
 }
 
 .card-header {
@@ -160,36 +153,49 @@ const recommendations = computed(() => {
   display: flex;
   align-items: center;
   gap: 1.25rem;
-  background: var(--bg-header);
-  border-bottom: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--gray-100);
 }
 
 .risk-icon-wrapper {
   width: 56px;
   height: 56px;
-  border-radius: 16px;
+  border-radius: 14px;
   background: white;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 1.5rem;
-  color: var(--theme-color);
+  color: var(--risk-color);
   position: relative;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-sm);
+  z-index: 1;
 }
 
 .pulse-ring {
   position: absolute;
   inset: -4px;
-  border-radius: 20px;
-  border: 2px solid var(--theme-color);
-  opacity: 0.2;
-  animation: pulse 2s infinite;
+  border-radius: 18px;
+  border: 2px solid var(--risk-color);
+  opacity: 0.15;
+  animation: ripple 2s infinite;
+  z-index: -1;
 }
 
-.header-content h4 {
-  margin: 0 0 0.4rem 0;
-  font-size: 1.25rem;
+@keyframes ripple {
+  0% {
+    transform: scale(1);
+    opacity: 0.3;
+  }
+  100% {
+    transform: scale(1.4);
+    opacity: 0;
+  }
+}
+
+.card-title {
+  font-size: 1.125rem;
+  font-weight: 800;
+  margin: 0 0 0.375rem 0;
   color: var(--gray-900);
 }
 
@@ -199,22 +205,23 @@ const recommendations = computed(() => {
 }
 
 .risk-badge {
-  font-size: 0.7rem;
-  font-weight: 800;
-  padding: 0.25rem 0.6rem;
-  border-radius: 6px;
-  background: var(--theme-color);
+  font-size: 0.625rem;
+  font-weight: 900;
+  padding: 0.25rem 0.625rem;
+  border-radius: 100px;
+  background: var(--risk-color);
   color: white;
   letter-spacing: 0.05em;
 }
 
 .conf-badge {
-  font-size: 0.7rem;
+  font-size: 0.625rem;
+  font-weight: 700;
+  padding: 0.25rem 0.625rem;
+  border-radius: 100px;
+  background: var(--gray-50);
   color: var(--gray-500);
-  background: white;
-  padding: 0.25rem 0.6rem;
-  border-radius: 6px;
-  border: 1px solid rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--gray-100);
 }
 
 .card-body {
@@ -222,190 +229,154 @@ const recommendations = computed(() => {
 }
 
 .risk-desc {
-  margin: 0 0 1.5rem 0;
+  font-size: 0.9375rem;
   color: var(--gray-600);
-  font-size: 0.95rem;
-  line-height: 1.5;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+  font-weight: 500;
 }
 
-/* Meter */
-.risk-meter-wrapper {
+/* Meter Styles */
+.risk-meter-container {
   margin-bottom: 2rem;
 }
 
 .meter-labels {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 0.5rem;
-  font-size: 0.75rem;
-  font-weight: 700;
+  margin-bottom: 0.75rem;
+  font-size: 0.6875rem;
+  font-weight: 800;
   color: var(--gray-400);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .meter-track {
   height: 10px;
-  background: #f1f5f9;
-  border-radius: 10px;
+  background: var(--gray-100);
+  border-radius: 100px;
   position: relative;
-  overflow: visible;
 }
 
 .meter-fill {
   height: 100%;
-  background: linear-gradient(90deg, #10b981 0%, #f59e0b 50%, #ef4444 100%);
-  border-radius: 10px;
-  transition: width 1s ease-out;
+  border-radius: 100px;
+  background: linear-gradient(to right, #10b981, #f59e0b, #ef4444);
+  transition: width 1.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.meter-marker {
+.meter-thumb {
   position: absolute;
   top: 50%;
   transform: translate(-50%, -50%);
-  width: 16px;
-  height: 16px;
+  width: 20px;
+  height: 20px;
   background: white;
-  border: 3px solid var(--theme-color);
+  border: 3px solid var(--risk-color);
   border-radius: 50%;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-  transition: left 1s ease-out;
-  cursor: help;
-}
-
-.marker-tooltip {
-  position: absolute;
-  bottom: 100%;
-  left: 50%;
-  transform: translateX(-50%) translateY(-8px);
-  background: var(--gray-900);
-  color: white;
-  padding: 0.2rem 0.5rem;
-  border-radius: 4px;
-  font-size: 0.7rem;
-  opacity: 0;
-  transition: all 0.2s;
-  pointer-events: none;
-}
-
-.meter-marker:hover .marker-tooltip {
-  opacity: 1;
-  transform: translateX(-50%) translateY(-12px);
+  box-shadow: var(--shadow-md);
+  transition: left 1.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* Info Grid */
-.info-grid {
+.info-row {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: 1fr 1fr;
   gap: 1rem;
   margin-bottom: 1.5rem;
 }
 
-.info-item {
-  background: var(--bg-info);
-  padding: 0.8rem;
-  border-radius: 12px;
+.info-box {
+  background: var(--gray-25);
+  border: 1px solid var(--gray-100);
+  padding: 0.875rem;
+  border-radius: 14px;
   display: flex;
   align-items: center;
-  gap: 0.8rem;
+  gap: 0.75rem;
 }
 
-.info-item i {
-  color: var(--theme-color);
-  font-size: 1.1rem;
+.info-icon {
+  font-size: 1rem;
+  color: var(--risk-color);
 }
 
-.info-item .label {
-  display: block;
-  font-size: 0.7rem;
-  color: var(--gray-500);
+.info-data {
+  display: flex;
+  flex-direction: column;
+}
+
+.info-label {
+  font-size: 0.625rem;
+  font-weight: 700;
+  color: var(--gray-400);
   text-transform: uppercase;
-  font-weight: 700;
 }
-
-.info-item .value {
-  display: block;
-  font-size: 0.9rem;
-  font-weight: 700;
+.info-value {
+  font-size: 0.875rem;
+  font-weight: 800;
   color: var(--gray-800);
 }
 
-/* Recommendations */
-.recommendations-box {
-  background: white;
-  border: 1px solid var(--border-color);
-  border-radius: 12px;
+/* Actions */
+.actions-container {
+  background: var(--gray-50);
+  border-radius: 14px;
   padding: 1.25rem;
 }
 
-.rec-title {
+.actions-header {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  font-weight: 700;
+  gap: 0.625rem;
+  font-weight: 800;
+  font-size: 0.8125rem;
   color: var(--gray-900);
-  margin-bottom: 0.8rem;
-  font-size: 0.9rem;
+  margin-bottom: 1rem;
 }
 
-.rec-title i {
+.actions-header i {
   color: var(--primary);
 }
 
-.rec-list {
+.actions-list {
   list-style: none;
   padding: 0;
   margin: 0;
-}
-
-.rec-list li {
   display: flex;
-  gap: 0.6rem;
-  font-size: 0.85rem;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+
+.action-item {
+  display: flex;
+  gap: 0.75rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
   color: var(--gray-600);
-  margin-bottom: 0.5rem;
-  align-items: flex-start;
+  line-height: 1.4;
 }
 
-.rec-list li i {
-  color: var(--success);
-  margin-top: 0.2rem;
-  font-size: 0.75rem;
+.action-item i {
+  color: var(--secondary);
+  font-size: 0.875rem;
+  margin-top: 0.125rem;
 }
 
-/* Theme Variations */
+/* Themes */
 .risk-card.high {
-  --theme-color: #ef4444;
-  --bg-header: #fef2f2;
-  --border-color: #fee2e2;
-  --bg-info: #fef2f2;
+  --risk-color: #ef4444;
 }
-
 .risk-card.medium {
-  --theme-color: #f59e0b;
-  --bg-header: #fffbeb;
-  --border-color: #fef3c7;
-  --bg-info: #fffbeb;
+  --risk-color: #f59e0b;
 }
-
 .risk-card.low {
-  --theme-color: #10b981;
-  --bg-header: #ecfdf5;
-  --border-color: #d1fae5;
-  --bg-info: #ecfdf5;
+  --risk-color: #10b981;
 }
 
-@keyframes pulse {
-  0% {
-    transform: scale(1);
-    opacity: 0.2;
-  }
-  100% {
-    transform: scale(1.5);
-    opacity: 0;
-  }
-}
-
-@media (max-width: 768px) {
-  .info-grid {
+@media (max-width: 480px) {
+  .info-row {
     grid-template-columns: 1fr;
   }
 }
