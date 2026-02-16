@@ -159,7 +159,7 @@ const showGPSTips = () => {
 }
 
 onMounted(() => {
-  locationStore.loadSavedLocations()
+  locationStore.loadStoreData()
 
   if (!navigator.geolocation) {
     toast('Browser Anda tidak mendukung GPS.', 'warning')

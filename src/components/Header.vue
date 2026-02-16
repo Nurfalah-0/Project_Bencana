@@ -18,7 +18,11 @@
             </router-link>
             <router-link to="/lokasi-tersimpan" class="nav-link">
               <i class="fas fa-bookmark"></i>
-              <span>Lokasi Tersimpan</span>
+              <span>Pantauan</span>
+            </router-link>
+            <router-link to="/analisis-riwayat" class="nav-link">
+              <i class="fas fa-chart-line"></i>
+              <span>Riwayat</span>
             </router-link>
             <router-link to="/pengaturan" class="nav-link">
               <i class="fas fa-cog"></i>
@@ -74,6 +78,13 @@
                   <span class="desc">Akses lokasi favorit Anda</span>
                 </div>
               </router-link>
+              <router-link to="/analisis-riwayat" class="mobile-nav-link" @click="toggleMobileMenu">
+                <i class="fas fa-chart-line"></i>
+                <div class="link-text">
+                  <span class="label">Analisis Riwayat</span>
+                  <span class="desc">Lihat data banjir masa lalu</span>
+                </div>
+              </router-link>
               <router-link to="/pengaturan" class="mobile-nav-link" @click="toggleMobileMenu">
                 <i class="fas fa-cog"></i>
                 <div class="link-text">
@@ -84,20 +95,20 @@
 
               <div class="mobile-nav-divider"></div>
 
-              <a href="#" class="mobile-nav-link" @click.prevent="showHelp">
+              <router-link to="/buku-panduan" class="mobile-nav-link" @click="toggleMobileMenu">
                 <i class="fas fa-question-circle"></i>
                 <div class="link-text">
                   <span class="label">Bantuan</span>
                   <span class="desc">Pusat bantuan & FAQ</span>
                 </div>
-              </a>
-              <a href="#" class="mobile-nav-link" @click.prevent="showAbout">
+              </router-link>
+              <router-link to="/tim-pengembang" class="mobile-nav-link" @click="toggleMobileMenu">
                 <i class="fas fa-info-circle"></i>
                 <div class="link-text">
                   <span class="label">Tentang</span>
                   <span class="desc">Info pengembang & aplikasi</span>
                 </div>
-              </a>
+              </router-link>
             </div>
 
             <div class="mobile-nav-footer">
@@ -144,16 +155,6 @@ onUnmounted(() => {
 const downloadApp = () => {
   toast('Aplikasi akan segera tersedia di Google Play Store!', 'info')
 }
-
-const showHelp = () => {
-  toast('Fitur bantuan akan segera tersedia', 'info')
-  toggleMobileMenu()
-}
-
-const showAbout = () => {
-  toast('AquaSentinel - Sistem Peringatan Dini Banjir Jawa Timur', 'info')
-  toggleMobileMenu()
-}
 </script>
 
 <style scoped>
@@ -182,6 +183,7 @@ const showAbout = () => {
   padding: 0.625rem 1.125rem;
   border-radius: var(--radius);
   transition: var(--transition-fast);
+  white-space: nowrap;
   font-size: 0.9375rem;
 }
 

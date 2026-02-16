@@ -12,22 +12,51 @@ export const useLocationStore = defineStore('location', () => {
   })
   const savedLocations = ref([])
   const showResults = ref(false)
+  const detectionHistory = ref([])
 
-  // Load saved locations from localStorage
-  const loadSavedLocations = () => {
+  // Load data from localStorage
+  const loadStoreData = () => {
     try {
-      const saved = localStorage.getItem('aquasentinel_saved_locations')
-      if (saved) {
-        savedLocations.value = JSON.parse(saved)
+      const savedLocs = localStorage.getItem('aquasentinel_saved_locations')
+      if (savedLocs) {
+        savedLocations.value = JSON.parse(savedLocs)
+      }
+
+      const savedHistory = localStorage.getItem('aquasentinel_detection_history')
+      if (savedHistory) {
+        detectionHistory.value = JSON.parse(savedHistory)
       }
     } catch (e) {
-      console.error('Failed to load saved locations', e)
-      savedLocations.value = []
+      console.error('Failed to load store data', e)
     }
   }
 
   const saveToLocalStorage = () => {
     localStorage.setItem('aquasentinel_saved_locations', JSON.stringify(savedLocations.value))
+    localStorage.setItem('aquasentinel_detection_history', JSON.stringify(detectionHistory.value))
+  }
+
+  const addToHistory = (location, risk) => {
+    const historyItem = {
+      ...location,
+      riskLevel: risk.level,
+      detectedAt: new Date().toISOString(),
+      id: Date.now().toString()
+    }
+
+    detectionHistory.value.unshift(historyItem)
+
+    // Limit history to 50 items
+    if (detectionHistory.value.length > 50) {
+      detectionHistory.value = detectionHistory.value.slice(0, 50)
+    }
+
+    saveToLocalStorage()
+  }
+
+  const clearHistory = () => {
+    detectionHistory.value = []
+    saveToLocalStorage()
   }
 
   const addLocation = location => {
@@ -159,6 +188,9 @@ export const useLocationStore = defineStore('location', () => {
       zoneName:
         nearestDangerZone && minDistance < nearestDangerZone.radius ? nearestDangerZone.name : null
     }
+
+    // Add to detection history
+    addToHistory({ lat, lng, address: 'Current Analysis' }, floodRisk.value)
   }
 
   // Helper functions
@@ -265,6 +297,7 @@ export const useLocationStore = defineStore('location', () => {
     floodRisk,
     gpsData,
     savedLocations,
+    detectionHistory,
     showResults,
 
     // Computed
@@ -272,13 +305,14 @@ export const useLocationStore = defineStore('location', () => {
     formattedCurrentTime,
 
     // Actions
-    loadSavedLocations,
+    loadStoreData,
     saveCurrentLocation,
     addLocation,
     removeLocation,
     isLocationSaved,
     setLocationFromGPS,
     setLocationFromAddress,
-    detectFloodRiskForLocation
+    detectFloodRiskForLocation,
+    clearHistory
   }
 })

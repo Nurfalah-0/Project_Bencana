@@ -27,27 +27,27 @@
           <div class="nav-group">
             <h5>Navigasi Utama</h5>
             <div class="nav-links">
-              <a href="#" @click.prevent="navigate('home')">Beranda Utama</a>
-              <a href="#" @click.prevent="navigate('saved')">Daftar Pantauan</a>
-              <a href="#" @click.prevent="navigate('history')">Analisis Riwayat</a>
-              <a href="#" @click.prevent="navigate('settings')">Konfigurasi</a>
+              <router-link to="/">Beranda Utama</router-link>
+              <router-link to="/lokasi-tersimpan">Daftar Pantauan</router-link>
+              <router-link to="/analisis-riwayat">Analisis Riwayat</router-link>
+              <router-link to="/pengaturan">Konfigurasi</router-link>
             </div>
           </div>
           <div class="nav-group">
             <h5>Informasi & Edukasi</h5>
             <div class="nav-links">
-              <a href="#" @click.prevent="navigate('help')">Buku Panduan</a>
-              <a href="#" @click.prevent="navigate('about')">Tim Pengembang</a>
-              <a href="#" @click.prevent="navigate('faq')">Tanya Jawab (FAQ)</a>
-              <a href="#" @click.prevent="navigate('contact')">Hubungi Kami</a>
+              <router-link to="/buku-panduan">Buku Panduan</router-link>
+              <router-link to="/tim-pengembang">Tim Pengembang</router-link>
+              <router-link to="/tanya-jawab">Tanya Jawab (FAQ)</router-link>
+              <router-link to="/hubungi-kami">Hubungi Kami</router-link>
             </div>
           </div>
           <div class="nav-group">
             <h5>Hukum</h5>
             <div class="nav-links">
-              <a href="#" @click.prevent="navigate('privacy')">Privasi Data</a>
-              <a href="#" @click.prevent="navigate('terms')">Ketentuan Layanan</a>
-              <a href="#" @click.prevent="navigate('disclaimer')">Penafian Situs</a>
+              <router-link to="/privasi">Privasi Data</router-link>
+              <router-link to="/ketentuan">Ketentuan Layanan</router-link>
+              <router-link to="/penafian">Penafian Situs</router-link>
             </div>
           </div>
         </div>
@@ -85,10 +85,6 @@
 import { computed } from 'vue'
 
 const currentYear = computed(() => new Date().getFullYear())
-
-const navigate = page => {
-  window.scrollTo({ top: 0, behavior: 'smooth' })
-}
 </script>
 
 <style scoped>

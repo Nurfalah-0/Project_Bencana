@@ -48,19 +48,21 @@ defineProps({
 }
 
 .feature:hover {
-  transform: translateY(-8px);
-  box-shadow: var(--shadow-lg);
+  transform: translateY(-10px) scale(1.02);
+  box-shadow: 0 30px 60px -12px hsla(var(--primary-h), var(--primary-s), 50%, 0.15);
   border-color: var(--primary-soft);
+  background: white;
 }
 
 .feature:hover::before {
   opacity: 1;
+  background: linear-gradient(135deg, var(--primary-soft) 0%, transparent 100%);
 }
 
 .feature-icon-wrapper {
   width: 52px;
   height: 52px;
-  border-radius: 14px;
+  border-radius: 16px;
   background: var(--primary-soft);
   color: var(--primary);
   display: flex;
@@ -68,7 +70,7 @@ defineProps({
   justify-content: center;
   font-size: 1.25rem;
   flex-shrink: 0;
-  transition: var(--transition-fast);
+  transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
   position: relative;
   z-index: 1;
 }
@@ -76,7 +78,12 @@ defineProps({
 .feature:hover .feature-icon-wrapper {
   background: var(--primary);
   color: white;
-  transform: scale(1.1) rotate(5deg);
+  transform: scale(1.15) rotate(12deg);
+  box-shadow: 0 10px 20px -5px var(--primary-soft);
+}
+
+.feature:hover .feature-icon-wrapper i {
+  color: white !important;
 }
 
 .feature-content {
@@ -92,6 +99,11 @@ defineProps({
   font-weight: 800;
   color: var(--gray-900);
   margin: 0;
+  transition: color 0.3s ease;
+}
+
+.feature:hover .feature-title {
+  color: var(--primary);
 }
 
 .feature-desc {
@@ -100,6 +112,11 @@ defineProps({
   line-height: 1.6;
   margin: 0;
   font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.feature:hover .feature-desc {
+  color: var(--gray-600);
 }
 
 @media (max-width: 640px) {
