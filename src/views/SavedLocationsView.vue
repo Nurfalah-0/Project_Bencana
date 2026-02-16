@@ -69,7 +69,7 @@ const toast = inject('toast')
 const savedLocations = computed(() => locationStore.savedLocations)
 
 onMounted(() => {
-  locationStore.loadSavedLocations()
+  locationStore.loadStoreData()
 })
 
 const formatDate = dateString => {

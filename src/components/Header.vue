@@ -74,7 +74,7 @@
               <router-link to="/lokasi-tersimpan" class="mobile-nav-link" @click="toggleMobileMenu">
                 <i class="fas fa-bookmark"></i>
                 <div class="link-text">
-                  <span class="label">Lokasi Tersimpan</span>
+                  <span class="label">Pantauan</span>
                   <span class="desc">Akses lokasi favorit Anda</span>
                 </div>
               </router-link>

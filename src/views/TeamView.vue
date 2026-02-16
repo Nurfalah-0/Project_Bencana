@@ -44,7 +44,7 @@ const teamMembers = [
   { name: 'Muhammad Iqbal Nurfalah', role: 'Frontend Developer' },
   { name: 'Muhammad Ikhsan Mujianto', role: 'Backend Developer' },
   { name: 'Andri Prayitno', role: 'Social Marketing' },
-  { name: 'Moh. Jakfar Ilham S.Kom', role: 'Data Scientist' }
+  { name: "Moh. Ja'far Ilham S.Kom", role: 'Leader ' }
 ]
 </script>
 

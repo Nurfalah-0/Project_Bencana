@@ -41,8 +41,14 @@ import Toast from './components/Toast.vue'
 import ChecklistModal from './components/modals/ChecklistModal.vue'
 import GPSTipsModal from './components/modals/GPSTipsModal.vue'
 import { useUIStore } from './stores/uiStore'
+import { useLocationStore } from './stores/locationStore'
 
 const uiStore = useUIStore()
+const locationStore = useLocationStore()
+
+onMounted(() => {
+  locationStore.loadStoreData()
+})
 
 // Re-expose legacy provide for components not yet refactored
 import { provide } from 'vue'
