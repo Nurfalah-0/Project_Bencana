@@ -4,7 +4,7 @@
       <div class="page-header animate-reveal">
         <div class="page-badge">
           <i class="fas fa-code"></i>
-          <span>DEVELOPMENT TEAM</span>
+          <span> DEVELOPMENT TEAM</span>
         </div>
         <h1 class="page-title">Tim <span class="highlight">Pengembang</span></h1>
         <p class="page-desc">
@@ -21,16 +21,39 @@
           :style="{ 'animation-delay': index * 0.1 + 's' }"
         >
           <div class="member-image">
-            <div class="placeholder-avatar">
-              <i class="fas fa-user-astronaut"></i>
+            <img v-if="member.image" :src="member.image" :alt="member.name" class="member-photo" />
+            <div v-else class="placeholder-avatar" :style="{ background: member.gradient }">
+              <span class="initials">{{ getInitials(member.name) }}</span>
             </div>
           </div>
           <div class="member-info">
             <h3>{{ member.name }}</h3>
             <span class="role">{{ member.role }}</span>
             <div class="member-socials">
-              <a href="#"><i class="fab fa-github"></i></a>
-              <a href="#"><i class="fab fa-linkedin"></i></a>
+              <a
+                v-if="member.socials.github"
+                :href="member.socials.github"
+                target="_blank"
+                title="GitHub"
+              >
+                <i class="fab fa-github"></i>
+              </a>
+              <a
+                v-if="member.socials.linkedin"
+                :href="member.socials.linkedin"
+                target="_blank"
+                title="LinkedIn"
+              >
+                <i class="fab fa-linkedin"></i>
+              </a>
+              <a
+                v-if="member.socials.instagram"
+                :href="member.socials.instagram"
+                target="_blank"
+                title="Instagram"
+              >
+                <i class="fab fa-instagram"></i>
+              </a>
             </div>
           </div>
         </div>
@@ -40,12 +63,80 @@
 </template>
 
 <script setup>
+import { onMounted } from 'vue'
+import { useUIStore } from '@/stores/uiStore'
+
+const uiStore = useUIStore()
+
+onMounted(() => {
+  try {
+    // Basic verification of team members loading
+    if (!teamMembers || teamMembers.length === 0) {
+      uiStore.setError('Data tim pengembang tidak ditemukan.', 'TeamView')
+    }
+  } catch (error) {
+    uiStore.setError(error, 'TeamView')
+  }
+})
 const teamMembers = [
-  { name: 'Muhammad Iqbal Nurfalah', role: 'Frontend Developer' },
-  { name: 'Muhammad Ikhsan Mujianto', role: 'Backend Developer' },
-  { name: 'Andri Prayitno', role: 'Social Marketing' },
-  { name: "Moh. Ja'far Ilham S.Kom", role: 'Leader ' }
+  {
+    name: 'Muhammad Iqbal Nurfalah',
+    role: 'Frontend Developer',
+    image: '/team/iqbal.JPG',
+    gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+    socials: {
+      github: 'https://github.com/Nurfalah-0#',
+      linkedin: 'https://www.linkedin.com/in/muhammad-iqbal-nurfalah-7b59503a5/',
+      instagram: 'https://www.instagram.com/iqbal_noerfalah/'
+    }
+  },
+  {
+    name: 'Muhammad Ikhsan Mujianto',
+    role: 'Backend Developer',
+    image: '/team/iksan.JPG',
+    gradient: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+    socials: {
+      github: 'https://github.com/Naski1',
+      linkedin: 'https://linkedin.com/in/ikhsanmujiano',
+      instagram: 'https://www.instagram.com/sanz_eror/'
+    }
+  },
+  {
+    name: 'Andri Prayitno',
+    role: 'Social Marketing',
+    image: '/team/andri.png',
+    gradient: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+    socials: {
+      github: '',
+      linkedin: 'https://www.linkedin.com/in/andri-prayitno/',
+      instagram: 'https://www.instagram.com/andri_prytn/'
+    }
+  },
+  {
+    name: "Moh. Ja'far Ilham S.Kom",
+    role: 'Leader',
+    image: '/team/pakilham.png',
+    gradient: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
+    socials: {
+      github: 'https://github.com/Ondisia',
+      linkedin: 'https://www.linkedin.com/in/moh-ja-far-ilham-rohmatullah-096398182/',
+      instagram: 'https://www.instagram.com/black_domon/'
+    }
+  }
 ]
+
+// Function to get initials from name
+const getInitials = name => {
+  if (!name) return '??'
+  return name
+    .trim()
+    .split(/\s+/)
+    .map(word => word[0])
+    .filter(char => char)
+    .slice(0, 2)
+    .join('')
+    .toUpperCase()
+}
 </script>
 
 <style scoped>
@@ -86,17 +177,49 @@ const teamMembers = [
   position: relative;
 }
 
+.member-photo {
+  width: 100%;
+  height: 100%;
+  border-radius: 40px;
+  object-fit: cover;
+  border: 3px solid white;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  transition: all 0.4s ease;
+}
+
+.team-card:hover .member-photo {
+  transform: scale(1.05);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
+}
+
 .placeholder-avatar {
   width: 100%;
   height: 100%;
-  background: var(--gray-50);
   border-radius: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 3rem;
-  color: var(--gray-200);
-  border: 1px solid var(--gray-100);
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: white;
+  border: 3px solid white;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  transition: all 0.4s ease;
+}
+
+.team-card:hover .placeholder-avatar {
+  transform: scale(1.05);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
+}
+
+.initials {
+  font-family:
+    'Inter',
+    system-ui,
+    -apple-system,
+    sans-serif;
+  letter-spacing: 0.05em;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 .team-card h3 {

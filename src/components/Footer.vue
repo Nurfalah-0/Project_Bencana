@@ -59,21 +59,21 @@
         </div>
         <div class="bottom-right">
           <div class="social-pills">
-            <a href="#" class="social-pill" title="Facebook">
+            <button class="social-pill" title="Facebook" @click="openSocial('Facebook')">
               <i class="fab fa-facebook-f"></i>
-            </a>
-            <a href="#" class="social-pill" title="Twitter">
+            </button>
+            <button class="social-pill" title="Twitter" @click="openSocial('Twitter')">
               <i class="fab fa-twitter"></i>
-            </a>
-            <a href="#" class="social-pill" title="Instagram">
+            </button>
+            <button class="social-pill" title="Instagram" @click="openSocial('Instagram')">
               <i class="fab fa-instagram"></i>
-            </a>
-            <a href="#" class="social-pill" title="LinkedIn">
+            </button>
+            <button class="social-pill" title="LinkedIn" @click="openSocial('LinkedIn')">
               <i class="fab fa-linkedin-in"></i>
-            </a>
-            <a href="#" class="social-pill" title="GitHub">
+            </button>
+            <button class="social-pill" title="GitHub" @click="openSocial('GitHub')">
               <i class="fab fa-github"></i>
-            </a>
+            </button>
           </div>
         </div>
       </div>
@@ -82,9 +82,14 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, inject } from 'vue'
 
+const toast = inject('toast')
 const currentYear = computed(() => new Date().getFullYear())
+
+const openSocial = platform => {
+  toast(`Halaman ${platform} AquaSentinel segera hadir!`, 'info')
+}
 </script>
 
 <style scoped>
@@ -238,6 +243,8 @@ const currentYear = computed(() => new Date().getFullYear())
   text-decoration: none;
   transition: var(--transition);
   border: 1px solid rgba(255, 255, 255, 0.05);
+  cursor: pointer;
+  font-size: 1rem;
 }
 
 .social-pill:hover {

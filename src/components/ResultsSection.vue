@@ -7,7 +7,7 @@
         <header class="panel-header glass-panel">
           <div class="header-main">
             <div class="header-icon-box">
-              <i class="fas fa-microchip-ai"></i>
+              <i class="fas fa-brain"></i>
               <div class="icon-pulse"></div>
             </div>
             <div class="header-info">
@@ -18,8 +18,8 @@
                   Terdeteksi: {{ formattedTimeShort }}
                 </span>
                 <span class="meta-separator">•</span>
-                <span class="meta-item">
-                  <i class="fas fa-signal"></i>
+                <span class="meta-item live-indicator">
+                  <span class="live-dot"></span>
                   Live System
                 </span>
               </div>
@@ -315,7 +315,7 @@ const saveLocation = () => {
   justify-content: space-between;
   align-items: center;
   border-bottom: 1px solid var(--gray-100);
-  background: linear-gradient(to right, rgba(255, 255, 255, 0.9), rgba(248, 250, 252, 0.8));
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 250, 252, 0.85));
 }
 
 .header-main {
@@ -328,14 +328,14 @@ const saveLocation = () => {
   width: 60px;
   height: 60px;
   border-radius: 18px;
-  background: var(--primary);
+  background: linear-gradient(135deg, var(--primary), #6366f1);
   color: white;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 1.75rem;
   position: relative;
-  box-shadow: 0 8px 16px -4px rgba(37, 99, 235, 0.4);
+  box-shadow: 0 8px 20px -4px rgba(37, 99, 235, 0.45);
 }
 
 .icon-pulse {
@@ -377,6 +377,34 @@ const saveLocation = () => {
 
 .meta-separator {
   color: var(--gray-300);
+}
+
+.live-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #10b981;
+  font-weight: 700;
+}
+
+.live-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #10b981;
+  animation: livePulse 1.5s infinite;
+}
+
+@keyframes livePulse {
+  0%,
+  100% {
+    opacity: 1;
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.5);
+  }
+  50% {
+    opacity: 0.7;
+    box-shadow: 0 0 0 6px rgba(16, 185, 129, 0);
+  }
 }
 
 .btn-close-panel {

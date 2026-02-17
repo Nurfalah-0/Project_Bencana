@@ -170,6 +170,7 @@ onMounted(() => {
     const lat = parseFloat(route.query.lat)
     const lng = parseFloat(route.query.lng)
     const address = route.query.address
+    const shouldDetect = route.query.detect === 'true'
 
     searchQuery.value = address
     selectedLocation.value = { lat, lng, displayName: address }
@@ -178,6 +179,9 @@ onMounted(() => {
     setTimeout(() => {
       initMap('hero-map', [lat, lng]).then(inst => {
         mapInstance.value = inst
+        if (shouldDetect) {
+          detectFloodRisk(false)
+        }
       })
     }, 500)
   }

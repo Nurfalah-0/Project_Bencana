@@ -115,7 +115,16 @@ const viewLocation = location => {
 }
 
 const detectRisk = location => {
-  toast('Fitur deteksi ulang akan segera tersedia', 'info')
+  router.push({
+    path: '/',
+    query: {
+      lat: location.lat,
+      lng: location.lng,
+      address: location.address,
+      detect: 'true'
+    }
+  })
+  toast('Memulai deteksi ulang...', 'info')
 }
 
 const removeLocation = id => {
